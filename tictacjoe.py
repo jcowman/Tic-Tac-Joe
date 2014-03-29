@@ -7,7 +7,7 @@ from time import sleep
 
 pygame.init()
 
-PLAYER = "O"
+PLAYER = "X"
 
 BACK_COLOR = (127,127,255)
 LINE_COLOR = (255,255,255)
@@ -61,44 +61,20 @@ def draw_moves():
 def check_win():
     
     global game_finished
-    
-    row_list =[(win_grid[0]+win_grid[1]+win_grid[2]),
-               (win_grid[3]+win_grid[4]+win_grid[5]),
-               (win_grid[6]+win_grid[7]+win_grid[8]),
-               (win_grid[0]+win_grid[3]+win_grid[6]),
-               (win_grid[1]+win_grid[4]+win_grid[7]),
-               (win_grid[2]+win_grid[5]+win_grid[8]),
-               (win_grid[0]+win_grid[4]+win_grid[8]),
-               (win_grid[2]+win_grid[4]+win_grid[6])]
 
-    tile_list =[(sec_list[0],sec_list[1],sec_list[2]),
-               (sec_list[3],sec_list[4],sec_list[5]),
-               (sec_list[6],sec_list[7],sec_list[8]),
-               (sec_list[0],sec_list[3],sec_list[6]),
-               (sec_list[1],sec_list[4],sec_list[7]),
-               (sec_list[2],sec_list[5],sec_list[8]),
-               (sec_list[0],sec_list[4],sec_list[8]),
-               (sec_list[2],sec_list[4],sec_list[6])]
+    row_list = [(0,1,2),(3,4,5),(6,7,8),(0,3,6),(1,4,7),(2,5,8),(0,4,8),(2,4,6)]
 
     for x in xrange(0,len(row_list)):
-        if row_list[x] == 3:
+        test_var = win_grid[row_list[x][0]] + win_grid[row_list[x][1]] + win_grid[row_list[x][2]]
+        if test_var == 3:
             for y in xrange(0,3):
-                draw_cross(tile_list[x][y],VICTORY_COLOR)
-            game_finished = True
-        elif row_list[x] == -3:
+                draw_cross(sec_list[row_list[x][y]],VICTORY_COLOR)
+                game_finished = True
+        elif test_var == -3:
             for y in xrange(0,3):
-                draw_circle(tile_list[x][y],VICTORY_COLOR)
-            game_finished = True
+                draw_circle(sec_list[row_list[x][y]],VICTORY_COLOR)
+                game_finished = True
 
-def clear_board():
-    for x in board:
-        x = None
-    for x in win_grid:
-        x = 0
-    draw_moves()
-    pygame.display.update()
-    game_finished = False
-    active_spot = None
         
 board = [None,None,None,None,None,None,None,None,None]
 sec_list = [sec1,sec2,sec3,sec4,sec5,sec6,sec7,sec8,sec9]
