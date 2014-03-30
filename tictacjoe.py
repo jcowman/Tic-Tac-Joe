@@ -36,6 +36,7 @@ game_finished = False
 
 def draw_board():
     SCREEN.fill(BACK_COLOR)
+    
     pygame.draw.line(SCREEN,(LINE_COLOR),(SCREENX/3,0),(SCREENX/3,SCREENY),LINE_WIDTH)
     pygame.draw.line(SCREEN,(LINE_COLOR),(SCREENX-(SCREENX/3),0),(SCREENX-(SCREENX/3),SCREENY),LINE_WIDTH)
     pygame.draw.line(SCREEN,(LINE_COLOR),(0,SCREENY/3),(SCREENX,SCREENY/3),LINE_WIDTH)
@@ -51,9 +52,12 @@ def draw_circle(section,color,width=SHAPE_WIDTH):
     pygame.draw.circle(SCREEN,BACK_COLOR,(section[0]+(section[2]/2),section[1]+(section[3]/2)),(section[2]/2)-width)
 
 def draw_moves():
+    
     for x in xrange(0,len(board)):
+        
         if board[x] == 1:
             draw_cross(sec_list[x],LINE_COLOR)
+            
         elif board[x] == -1:
             draw_circle(sec_list[x],LINE_COLOR)
 
@@ -64,12 +68,17 @@ def check_win():
     row_list = [(0,1,2),(3,4,5),(6,7,8),(0,3,6),(1,4,7),(2,5,8),(0,4,8),(2,4,6)]
 
     for x in xrange(0,len(row_list)):
+        
         test_var = board[row_list[x][0]] + board[row_list[x][1]] + board[row_list[x][2]]
+
         if test_var == 3:
+            
             for y in xrange(0,3):
                 draw_cross(sec_list[row_list[x][y]],VICTORY_COLOR)
                 game_finished = True
+                
         elif test_var == -3:
+            
             for y in xrange(0,3):
                 draw_circle(sec_list[row_list[x][y]],VICTORY_COLOR)
                 game_finished = True
@@ -87,12 +96,21 @@ while True:
             exit()
 
         if event.type == MOUSEBUTTONDOWN:
+            
             if game_finished == True:
-                exit()
+                
+                for x in xrange(0,len(board)):
+                    board[x] = 0
+                    
+                game_finished = False
+                active_spot = None
+                
             if active_spot != None:
+                
                 if PLAYER == "X":
                     board[active_spot] = 1
                     PLAYER = "O"
+                    
                 elif PLAYER == "O":
                     board[active_spot] = -1
                     PLAYER = "X"
@@ -106,14 +124,19 @@ while True:
     coords = pygame.mouse.get_pos()
 
     if game_finished == False:
+        
         for x in xrange(0,len(sec_list)):
+            
             if sec_list[x].collidepoint(coords) == 1 and board[x] == 0:
+                
                 if PLAYER == "X":
                     draw_cross(sec_list[x],UNACTIVE_COLOR)
                     active_spot = x
+                    
                 elif PLAYER == "O":
                     draw_circle(sec_list[x],UNACTIVE_COLOR)
                     active_spot = x
+                    
             elif sec_list[x].collidepoint(coords) == 1 and board[x] != 0:
                 active_spot = None
 
