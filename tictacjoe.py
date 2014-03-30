@@ -12,6 +12,7 @@ BACK_COLOR = (127,127,255)
 LINE_COLOR = (255,255,255)
 UNACTIVE_COLOR = (200,200,255)
 VICTORY_COLOR = (255,0,0)
+NOWIN_COLOR = (0,0,0)
 
 SCREENX = 600
 SCREENY = 600
@@ -37,18 +38,17 @@ game_finished = False
 def draw_board():
     SCREEN.fill(BACK_COLOR)
     
-    pygame.draw.line(SCREEN,(LINE_COLOR),(SCREENX/3,0),(SCREENX/3,SCREENY),LINE_WIDTH)
-    pygame.draw.line(SCREEN,(LINE_COLOR),(SCREENX-(SCREENX/3),0),(SCREENX-(SCREENX/3),SCREENY),LINE_WIDTH)
-    pygame.draw.line(SCREEN,(LINE_COLOR),(0,SCREENY/3),(SCREENX,SCREENY/3),LINE_WIDTH)
-    pygame.draw.line(SCREEN,(LINE_COLOR),(0,SCREENY-(SCREENY/3)),(SCREENX,SCREENY-(SCREENY/3)),LINE_WIDTH)
+    pygame.draw.line(SCREEN,LINE_COLOR,(SCREENX/3,0),(SCREENX/3,SCREENY),LINE_WIDTH)
+    pygame.draw.line(SCREEN,LINE_COLOR,(SCREENX-(SCREENX/3),0),(SCREENX-(SCREENX/3),SCREENY),LINE_WIDTH)
+    pygame.draw.line(SCREEN,LINE_COLOR,(0,SCREENY/3),(SCREENX,SCREENY/3),LINE_WIDTH)
+    pygame.draw.line(SCREEN,LINE_COLOR,(0,SCREENY-(SCREENY/3)),(SCREENX,SCREENY-(SCREENY/3)),LINE_WIDTH)
     
-
 def draw_cross(section,color,width=SHAPE_WIDTH):
-    pygame.draw.line(SCREEN,color,(section[0]+(width/2),section[1]),(section[0]+((SCREENX/3)-(width/2)),section[1]+(SCREENY/3)),width)
-    pygame.draw.line(SCREEN,color,(section[0]+((SCREENX/3)-(width/2)),section[1]),(section[0]+(width/2),section[1]+(SCREENY/3)),width)
+    pygame.draw.line(SCREEN,color,(section[0]+(width/2),section[1]+LINE_WIDTH),(section[0]+((SCREENX/3)-(width/2))-LINE_WIDTH,section[1]+(SCREENY/3)-LINE_WIDTH),width)
+    pygame.draw.line(SCREEN,color,(section[0]+((SCREENX/3)-(width/2))-LINE_WIDTH,section[1]+LINE_WIDTH),(section[0]+(width/2),section[1]+(SCREENY/3)-LINE_WIDTH),width)
 
 def draw_circle(section,color,width=SHAPE_WIDTH):
-    pygame.draw.circle(SCREEN,color,(section[0]+(section[2]/2),section[1]+(section[3]/2)),section[2]/2)
+    pygame.draw.circle(SCREEN,color,(section[0]+(section[2]/2),section[1]+(section[3]/2)),(section[2]/2)-LINE_WIDTH)
     pygame.draw.circle(SCREEN,BACK_COLOR,(section[0]+(section[2]/2),section[1]+(section[3]/2)),(section[2]/2)-width)
 
 def draw_moves():
@@ -77,11 +77,34 @@ def check_win():
                 draw_cross(sec_list[row_list[x][y]],VICTORY_COLOR)
                 game_finished = True
                 
+            return
+                
         elif test_var == -3:
             
             for y in xrange(0,3):
                 draw_circle(sec_list[row_list[x][y]],VICTORY_COLOR)
                 game_finished = True
+                
+            return
+
+    nowin_check = 0
+
+    for x in board:
+        
+        if x != 0:
+            nowin_check += 1
+
+    if nowin_check == 9:
+
+        for x in xrange(0,len(sec_list)):
+
+            if board[x] == 1:
+                draw_cross(sec_list[x],NOWIN_COLOR)
+                
+            elif board[x] == -1:
+                draw_circle(sec_list[x],NOWIN_COLOR)
+
+        game_finished = True
 
 sec_list = [sec1,sec2,sec3,sec4,sec5,sec6,sec7,sec8,sec9]
 board = [0,0,0,0,0,0,0,0,0]
