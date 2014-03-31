@@ -3,10 +3,14 @@
 import pygame
 from pygame.locals import *
 from sys import exit
+from random import randint
 
 pygame.init()
 
 PLAYER = "X"
+OPPONENT = -1
+
+turn = 2
 
 BACK_COLOR = (127,127,255)
 LINE_COLOR = (255,255,255)
@@ -106,6 +110,27 @@ def check_win():
 
         game_finished = True
 
+class AI(object):
+
+    def __init__(self,piece):
+        
+        self.piece = piece
+
+    def move(self,board):
+
+        piece_chosen = False
+
+        while True:
+
+            x = randint(0,8)
+
+            if board[x] == 0:
+                return x
+
+if OPPONENT != None:
+
+    OPPONENT = AI(OPPONENT)
+
 sec_list = [sec1,sec2,sec3,sec4,sec5,sec6,sec7,sec8,sec9]
 board = [0,0,0,0,0,0,0,0,0]
 
@@ -128,21 +153,35 @@ while True:
                 game_finished = False
                 active_spot = None
                 
-            if active_spot != None:
+            if active_spot != None and turn == 1:
                 
                 if PLAYER == "X":
+                    
                     board[active_spot] = 1
-                    PLAYER = "O"
+                    turn = 2
+
+                    if OPPONENT == None:
+                        PLAYER = "O"
                     
                 elif PLAYER == "O":
+                    
                     board[active_spot] = -1
-                    PLAYER = "X"
+                    turn = 2
+
+                    if OPPONENT == None:
+                        PLAYER = "X"
+
 
     draw_board()
 
     draw_moves()
 
     check_win()
+
+    if OPPONENT != None and turn == 2 and game_finished == False:
+        board[OPPONENT.move(board)] = OPPONENT.piece
+        
+    turn = 1
 
     coords = pygame.mouse.get_pos()
 
